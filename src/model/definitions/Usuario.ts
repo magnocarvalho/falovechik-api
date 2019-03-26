@@ -5,17 +5,23 @@ import * as mongoose from 'mongoose';
 export interface IUsuarioModel extends IDefault{
 
     id: string;
-    pass: string;
     email: string;
-    nome?: string;
+    nome: string;
+    sobrenome: string;
+    cpf: string;
+    uid: string;
+    pai: string;
     
 }
 
 let schema = {
-    email: { type: String, required: true }, //nome de usuário
-    pass: {type: String, required: true },//senha
-    nome: { type: String }, //Nome Completo
-    
+    id:  { type: String },
+    email:  { type: String },
+    nome:  { type: String },
+    sobrenome:  { type: String },
+    cpf:  { type: String },
+    uid:  { type: String },
+    pai:  { type: String },    
 };
 
 Inject(schema);

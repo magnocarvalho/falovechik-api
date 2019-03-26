@@ -59,7 +59,26 @@ class UsuarioCtrl {
       }
     );
   }
-
+  static getUsuarios(req, res, next) {
+    UsuarioCtrl.getAll().then(
+      data => {
+        res.json(data);
+      },
+      err => {
+        next(err);
+      }
+    );
+  }
+  private static getAll() {
+    return new Promise<IUsuarioModel>((resolve, reject) => {
+      UsuarioModel.find({ isDeleted: false}, (err, data) => {
+        if (err || data === null) reject(err);
+        else {
+          resolve(data);
+        }
+      });
+    });
+  }
   private static getById(id) {
     return new Promise<IUsuarioModel>((resolve, reject) => {
       UsuarioModel.findOne({ isDeleted: false, id: id }, (err, data) => {
