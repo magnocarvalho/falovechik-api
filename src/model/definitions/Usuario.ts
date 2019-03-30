@@ -11,7 +11,7 @@ export interface IUsuarioModel extends IDefault{
     cpf: string;
     uid: string;
     pai: string;
-    
+    username: string;
 }
 
 let schema = {
@@ -19,6 +19,7 @@ let schema = {
     email:  { type: String },
     nome:  { type: String },
     sobrenome:  { type: String },
+    username: {type: String},
     cpf:  { type: String },
     uid:  { type: String },
     pai:  { type: String },    

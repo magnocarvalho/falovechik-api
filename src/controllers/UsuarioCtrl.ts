@@ -70,11 +70,15 @@ class UsuarioCtrl {
     );
   }
   private static getAll() {
-    return new Promise<IUsuarioModel>((resolve, reject) => {
-      UsuarioModel.find({ isDeleted: false}, (err, data) => {
+    var listadeusuario = [] ;
+    return new Promise<any[]>((resolve, reject) => {
+      UsuarioModel.find({ isDeleted: false}, {nome: 1}, (err, data) => {
         if (err || data === null) reject(err);
         else {
-          resolve(data);
+          for (let i = 0; i < data.length; i++) {
+            listadeusuario.push({text: data[i].nome, id:data[i]._id}); 
+          }
+          resolve(listadeusuario);
         }
       });
     });
