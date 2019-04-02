@@ -4,26 +4,52 @@ const fs = require("fs");
 class UsuarioCtrl {
   static create(req, res, next) {
     var obj = req.body;
-    UsuarioModel.create(obj, (err, data) => {
-      if (err) next(err);
-      else res.json(data);
-    });
-  }
- 
-  static login(req, res, next) {
-      var obj = req.body;
-      var email = obj.email;
-      var pass = obj.pass;
-      UsuarioCtrl.getByLogin(email, pass).then( data => {
-        if(data)
-        {
-            res.json(data);
-        }
+    UsuarioCtrl.getByCpf(obj.cpf).then(res => {
+      next({ error: 'usuario ja existe!' })
+    }, err => {
+      UsuarioCtrl.getByUserNAme(obj.username).then(res1 => {
+        next({error: 'username ja exite'});
       },
+        err => {
+          UsuarioModel.create(obj, (err, data) => {
+            if (err) next(err);
+            else res.json(data);
+          });
+        })
+
+    })
+
+
+
+  }
+  static loginFirebase(req, res, next) {
+    var obj = req.body;
+    var uid = obj.email;
+    console.log(obj);
+    UsuarioCtrl.getByLoginFirebase(uid).then(data => {
+      if (data) {
+        res.json(data);
+      }
+    },
       err => {
         next(err);
       });
-      
+
+  }
+
+  static login(req, res, next) {
+    var obj = req.body;
+    var email = obj.email;
+    var pass = obj.pass;
+    UsuarioCtrl.getByLogin(email, pass).then(data => {
+      if (data) {
+        res.json(data);
+      }
+    },
+      err => {
+        next(err);
+      });
+
   }
   static putDadosUsuario(req, res, next) {
     var obj = req.body;
@@ -35,7 +61,7 @@ class UsuarioCtrl {
         "./bin/assets/" + id + ".png",
         base64Data,
         "base64",
-        function(err) {
+        function (err) {
           if (err) console.log("err = " + err);
         }
       );
@@ -70,13 +96,13 @@ class UsuarioCtrl {
     );
   }
   private static getAll() {
-    var listadeusuario = [] ;
+    var listadeusuario = [];
     return new Promise<any[]>((resolve, reject) => {
-      UsuarioModel.find({ isDeleted: false}, {nome: 1}, (err, data) => {
+      UsuarioModel.find({ isDeleted: false }, { username: 1 }, (err, data) => {
         if (err || data === null) reject(err);
         else {
           for (let i = 0; i < data.length; i++) {
-            listadeusuario.push({text: data[i].nome, id:data[i]._id}); 
+            listadeusuario.push({ text: data[i].username, id: data[i]._id });
           }
           resolve(listadeusuario);
         }
@@ -93,9 +119,39 @@ class UsuarioCtrl {
       });
     });
   }
+  private static getByCpf(cpf) {
+    return new Promise<IUsuarioModel>((resolve, reject) => {
+      UsuarioModel.findOne({ isDeleted: false, cpf: cpf }, (err, data) => {
+        if (err || data === null) reject(err);
+        else {
+          resolve(data);
+        }
+      });
+    });
+  }
+  private static getByUserNAme(user) {
+    return new Promise<IUsuarioModel>((resolve, reject) => {
+      UsuarioModel.findOne({ isDeleted: false, username: user }, (err, data) => {
+        if (err || data === null) reject(err);
+        else {
+          resolve(data);
+        }
+      });
+    });
+  }
   private static getByLogin(email, pass) {
     return new Promise<IUsuarioModel>((resolve, reject) => {
-      UsuarioModel.findOne({ isDeleted: false, email: email, pass: pass }, {pass:0}, (err, data) => {
+      UsuarioModel.findOne({ isDeleted: false, email: email, pass: pass }, { pass: 0 }, (err, data) => {
+        if (err || data === null) reject(err);
+        else {
+          resolve(data);
+        }
+      });
+    });
+  }
+  private static getByLoginFirebase(uid) {
+    return new Promise<IUsuarioModel>((resolve, reject) => {
+      UsuarioModel.findOne({ isDeleted: false, email: uid }, { pass: 0 }, (err, data) => {
         if (err || data === null) reject(err);
         else {
           resolve(data);

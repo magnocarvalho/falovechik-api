@@ -12,6 +12,7 @@ export interface IUsuarioModel extends IDefault{
     uid: string;
     pai: string;
     username: string;
+    foto: string;
 }
 
 let schema = {
@@ -23,6 +24,7 @@ let schema = {
     cpf:  { type: String },
     uid:  { type: String },
     pai:  { type: String },    
+    foto: {type: String}
 };
 
 Inject(schema);
