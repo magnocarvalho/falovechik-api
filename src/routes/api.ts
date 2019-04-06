@@ -1,5 +1,5 @@
 import * as express from 'express';
-import UsuarioCtrl from '../controllers/UsuarioCtrl';
+import UsuarioCtrl from '../controllers/usuarioCtrl';
 import PhotoCtlr from '../controllers/photoCtlr';
 
 
